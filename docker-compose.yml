@@ -1,0 +1,42 @@
+version: '3.4'
+services:
+  web:
+    image: nginx
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./:/var/www
+      - ./docker/nginx/logs:/var/log/nginx/
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file:
+      - .env
+
+  php:
+    build:
+      context: ./
+      dockerfile: ./docker/php/php-fpm.docker
+    volumes:
+      - ./:/var/www
+      - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/php/conf.d:/usr/local/etc/php/conf.d
+      - ./docker/php/php-fpm.conf:/usr/local/etc/php-fpm.conf
+    env_file:
+      - .env
+
+  php-cli:
+    build:
+      context: ./
+      dockerfile: ./docker/php-cli/php-cli.docker
+    volumes:
+      - ./:/var/www
+    tty: true
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
