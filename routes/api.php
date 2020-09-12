@@ -18,5 +18,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/user/massge/send', 'UserMessageController@store')
-    ->name('user.message.send')->middleware('auth:api');
+Route::post('/user/message/send', 'App\Http\Controllers\UserMessageController@store')
+    ->name('user.message.send')->middleware(['auth:api', 'count_massages']);
